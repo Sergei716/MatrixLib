@@ -21,31 +21,32 @@ endif
 
 all: $(TARGET)
 $(TARGET): $(SRC)
-	$(CC) -c $(CFLAGS) $(SRC)
-	ar rcs $@ $(OBJ)
-	ranlib $@
-	rm -rf *.o
+	@$(CC) -c $(CFLAGS) $(SRC)
+	@ar rcs $@ $(OBJ)
+	@ranlib $@
+	@rm -rf *.o
 
 test: $(TARGET)
 ifeq ($(OS), Darwin)
-	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(SRC) $(TEST_SRC) $^ -o unit_test $(LIBS)
+	@$(CC) $(CFLAGS) $(GCOV_FLAGS) $(SRC) $(TEST_SRC) $^ -o unit_test $(LIBS)
 else
-	$(CC) $(CFLAGS) $(GCOV_FLAGS) $(SRC) $(TEST_SRC) $^ -o unit_test $(LIBS) $(LINUX_FLAGS)
+	@rm -f *.gcda
+	@$(CC) $(CFLAGS) $(GCOV_FLAGS) $(SRC) $(TEST_SRC) $^ -o unit_test $(LIBS) $(LINUX_FLAGS)
 endif
-	./unit_test
+	@./unit_test
 
 gcov_report:
-	lcov -o s21_test.info -c -d .
-	genhtml -o report s21_test.info
-	$(OPEN_CMD) ./report/index.html
+	@lcov -o s21_test.info -c -d .
+	@genhtml -o report s21_test.info
+	@$(OPEN_CMD) ./report/index.html
 
 
 clean:
-	rm -rf *.o
-	rm -rf *.a
-	rm -rf *.gcda
-	rm -rf *.gcno
-	rm -rf *.info
-	rm -rf test
-	rm -rf report
-	rm -rf unit_test
+	@rm -rf *.o
+	@rm -rf *.a
+	@rm -rf *.gcda
+	@rm -rf *.gcno
+	@rm -rf *.info
+	@rm -rf test
+	@rm -rf report
+	@rm -rf unit_test
